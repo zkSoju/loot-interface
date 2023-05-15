@@ -55,8 +55,13 @@ export async function POST(req: NextRequest) {
   const fileContent = json.fileContent;
   const whitelist = fileContent.split("\n");
 
-  const totalAirdrop = 6000000000;
-  const claimAmounts = await computeInfo(whitelist, totalAirdrop);
+  const amount = req.nextUrl.searchParams.get("amount");
+
+  if (!amount) {
+    return NextResponse.error();
+  }
+
+  const claimAmounts = await computeInfo(whitelist, Number(amount));
 
   const addressToLeaf: AddressInfo = {};
   const leafToData: LeafInfo = {};
