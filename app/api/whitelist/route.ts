@@ -105,7 +105,7 @@ export async function POST(req: NextRequest) {
       };
     }
 
-    return NextResponse.json({ data });
+    return NextResponse.json({ root: root, data: data });
   } catch (e) {
     console.log(e);
     return NextResponse.error();
