@@ -25,6 +25,10 @@ type Data = {
   };
 };
 
+export const config = {
+  runtime: "edge",
+};
+
 const computeInfo = async (
   holders: string[],
   totalAirdrop: number
