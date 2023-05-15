@@ -8,7 +8,7 @@ import { ClipLoader } from "react-spinners";
 export default function Home() {
   const [data, setData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [amount, setAmount] = useState(0);
+  const [amount, setAmount] = useState("");
 
   const handleAmountChange = (event: any) => {
     setAmount(event.target.value);
@@ -62,6 +62,26 @@ export default function Home() {
     URL.revokeObjectURL(url);
   };
 
+  const [selectedAction, setSelectedAction] = useState<string>();
+  const [isConfirmed, setIsConfirmed] = useState(false);
+
+  const selectAction = (action: string) => {
+    setSelectedAction(action);
+  };
+
+  const handleChange = (
+    e: any,
+    setter: React.Dispatch<React.SetStateAction<string>>
+  ) => {
+    // Check if the input is a number
+    const re = /^[0-9\b]+$/;
+
+    // if value is not blank, then test the regex
+    if (e.target.value === "" || re.test(e.target.value)) {
+      setter(e.target.value);
+    }
+  };
+
   return (
     <div>
       <div className="relative z-10 flex h-screen w-full items-center justify-center">
@@ -73,7 +93,7 @@ export default function Home() {
                 <div className="shadow-me relative mr-4 h-16 w-16 rounded-md bg-white p-1">
                   <div className="relative h-full w-full overflow-hidden rounded-md">
                     <Image
-                      src="/ice.png"
+                      src="/coin.png"
                       fill
                       className="object-cover"
                       alt=""
@@ -81,50 +101,96 @@ export default function Home() {
                   </div>
                 </div>
                 <div className="flex flex-col">
-                  <p className="text-xl font-medium">Crystalize</p>
+                  <p className="text-xl font-medium">Token Bounty</p>
                   <p className="text-sm text-dark/80">
-                    Generate a merkle tree from file
+                    Distribute tokens to your community and more
                   </p>
                 </div>
               </div>
               <div className="mb-8 h-px w-full bg-black/10"></div>
             </div>
             <div className="flex flex-col">
-              <p className="mb-2 font-medium">Amount to distribute</p>
-              <input
-                className="mb-4 h-12 w-full rounded-lg bg-[#efeff7ff] p-4"
-                type="text"
-                value={amount}
-                onChange={handleAmountChange}
-                placeholder="Enter the amount of tokens to distribute"
-              />
-              <p className="mb-2 font-medium">Whitelist file</p>
-              <input
-                type="file"
-                accept=".txt"
-                id="fileInput"
-                className="mb-4 w-full rounded-md border border-gray-300 bg-white p-4 text-sm font-medium leading-4 text-gray-700 hover:bg-gray-50 focus:border-blue-500 focus:outline-none focus:ring-blue-500"
-              />
-              <button
-                onClick={handleUpload}
-                className="mt-4 flex h-12 w-full items-center justify-center rounded-lg border border-slate-500 bg-dark text-white"
-              >
-                {isLoading ? (
-                  <ClipLoader size={20} color="white" />
-                ) : (
-                  <div className="flex items-center">
-                    <p className="text-white">Generate</p>
-                    <BsStars className="ml-2 text-white" />
+              {!isConfirmed && (
+                <>
+                  <p className="mb-2 font-medium">Actions</p>
+                  <div className="mb-2 flex h-36 w-full">
+                    <div
+                      className={`mr-2 flex h-full w-full cursor-pointer flex-col justify-end rounded-md bg-[#efeff7ff] p-4 ${
+                        selectedAction === "existing" && "border-2 border-dark"
+                      }`}
+                      onClick={() => selectAction("existing")}
+                    >
+                      <p className="font-medium">Use existing token</p>
+                      <p className="text-xs text-dark/80">
+                        Distribute through our platform
+                      </p>
+                    </div>
+                    <div
+                      className={`flex h-full w-full cursor-pointer flex-col justify-end rounded-md bg-[#efeff7ff] p-4 ${
+                        selectedAction === "create" && "border-2 border-dark"
+                      }`}
+                      onClick={() => selectAction("create")}
+                    >
+                      <p className="font-medium">Create your own token</p>
+                      <p className="text-xs text-dark/80">
+                        Self-hosted distribution
+                      </p>
+                    </div>
                   </div>
-                )}
-              </button>
-              {data && (
+                </>
+              )}
+              {!isConfirmed ? (
                 <button
-                  onClick={downloadJson}
+                  onClick={() => setIsConfirmed(true)}
                   className="mt-4 flex h-12 w-full items-center justify-center rounded-lg border border-slate-500 bg-dark text-white"
                 >
-                  Download JSON
+                  Confirm Action
                 </button>
+              ) : (
+                <>
+                  {selectedAction === "existing" ? (
+                    <>
+                      <p className="mb-2 font-medium">Amount to distribute</p>
+                      <input
+                        onChange={(e) => handleChange(e, setAmount)}
+                        className="mb-4 h-12 w-full rounded-lg bg-[#efeff7ff] p-4"
+                        type="text"
+                        value={amount}
+                        placeholder="Enter the amount of tokens to distribute"
+                      />
+                      <p className="mb-2 font-medium">Whitelist file</p>
+                      <input
+                        type="file"
+                        accept=".txt"
+                        id="fileInput"
+                        className="mb-4 w-full rounded-md border border-gray-300 bg-white p-4 text-sm font-medium leading-4 text-gray-700 hover:bg-gray-50 focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+                      />
+                      <button
+                        onClick={handleUpload}
+                        className="mt-4 flex h-12 w-full items-center justify-center rounded-lg border border-slate-500 bg-dark text-white"
+                      >
+                        {isLoading ? (
+                          <ClipLoader size={20} color="white" />
+                        ) : (
+                          <div className="flex items-center">
+                            <p className="text-white">Generate</p>
+                            <BsStars className="ml-2 text-white" />
+                          </div>
+                        )}
+                      </button>
+                      {data && (
+                        <button
+                          onClick={downloadJson}
+                          className="mt-4 flex h-12 w-full items-center justify-center rounded-lg border border-slate-500 bg-dark text-white"
+                        >
+                          Download JSON
+                        </button>
+                      )}
+                    </>
+                  ) : (
+                    <></>
+                  )}
+                </>
               )}
             </div>
           </div>
