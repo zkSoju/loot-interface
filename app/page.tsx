@@ -103,7 +103,7 @@ export default function Home() {
                 type="file"
                 accept=".txt"
                 id="fileInput"
-                className="w-full rounded-md border border-gray-300 bg-white p-4 text-sm font-medium leading-4 text-gray-700 hover:bg-gray-50 focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+                className="mb-4 w-full rounded-md border border-gray-300 bg-white p-4 text-sm font-medium leading-4 text-gray-700 hover:bg-gray-50 focus:border-blue-500 focus:outline-none focus:ring-blue-500"
               />
               <button
                 onClick={handleUpload}
