@@ -73,8 +73,8 @@ export async function POST(req: NextRequest) {
     Object.entries(claimAmounts).forEach(([key, value], index) => {
       addressToLeaf[key] = keccak256(
         encodePacked(
-          ["uint256", "address", "uint32"],
-          [BigInt(index), key as `0x${string}`, value]
+          ["uint256", "address", "uint256"],
+          [BigInt(index), key as `0x${string}`, BigInt(value)]
         )
       );
 
