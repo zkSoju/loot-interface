@@ -26,7 +26,7 @@ type Data = {
   };
 };
 
-export const runtime = "edge";
+// export const runtime = "edge";
 
 const computeInfo = async (
   holders: string[],
