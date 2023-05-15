@@ -19,7 +19,7 @@
     "immer": "^9.0.12",
     "merkletreejs": "^0.3.10",
     "multer": "^1.4.5-lts.1",
-    "next": "^13.2.4",
+    "next": "13.1.6",
     "next-seo": "^5.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
