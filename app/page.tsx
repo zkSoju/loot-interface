@@ -44,9 +44,7 @@ export default function Home() {
       setIsLoading(false);
     };
 
-    if (file) {
-      reader.readAsText(file);
-    }
+    if (file) reader.readAsText(file);
   };
 
   const downloadJson = () => {
