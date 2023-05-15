@@ -9,19 +9,19 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [amount, setAmount] = useState(0);
 
-  const handleAmountChange = (event) => {
+  const handleAmountChange = (event: any) => {
     setAmount(event.target.value);
   };
 
   const handleUpload = async () => {
     setIsLoading(true);
 
-    const fileInput = document.getElementById("fileInput");
+    const fileInput = document.getElementById("fileInput") as HTMLInputElement;
 
-    const file = fileInput.files[0];
+    const file = fileInput.files?.[0];
     const reader = new FileReader();
 
-    reader.onload = async (event) => {
+    reader.onload = async (event: any) => {
       const fileContent = event.target.result;
 
       // Now, you can send fileContent to your API route
@@ -44,7 +44,9 @@ export default function Home() {
       setIsLoading(false);
     };
 
-    reader.readAsText(file);
+    if (file) {
+      reader.readAsText(file);
+    }
   };
 
   const downloadJson = () => {
