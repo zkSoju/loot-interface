@@ -5,6 +5,9 @@ module.exports = {
       fontFamily: {
         wagmi: "Gilroy",
       },
+      colors: {
+        dark: "#1f1f41",
+      },
     },
   },
   plugins: [],
