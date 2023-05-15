@@ -1,8 +1,6 @@
 import MerkleTree from "merkletreejs";
 import { NextRequest, NextResponse } from "next/server";
-import crypto from "node:crypto";
 import { encodePacked, keccak256 } from "viem";
-globalThis.crypto ??= crypto.webcrypto;
 
 type ClaimInfo = {
   [address: string]: number;
@@ -28,7 +26,7 @@ type Data = {
 };
 
 export const config = {
-  runtime: "edge",
+  runtime: "experimental-edge",
 };
 
 const computeInfo = async (
