@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
 import { BsStars } from "react-icons/bs";
 import { ClipLoader } from "react-spinners";
@@ -64,20 +65,34 @@ export default function Home() {
   return (
     <div>
       <div className="relative z-10 flex h-screen w-full items-center justify-center">
-        <div className="shadow-me relative flex w-96 flex-col items-start rounded-lg bg-white p-2">
+        <div className="shadow-me relative flex w-[32rem] flex-col items-start rounded-lg bg-white p-2">
           <div className="radial pointer-events-none absolute h-full w-full rounded-lg"></div>
           <div className="flex h-full w-full flex-col justify-between p-4">
             <div className="flex flex-col">
-              <p className="text-xl font-medium">Crystalize</p>
-              <p className="mb-4 text-sm text-dark/80">
-                Generate a merkle tree from file
-              </p>
-              <div className="w-full h-px bg-black/10 mb-8"></div>
+              <div className="mb-4 flex items-center">
+                <div className="shadow-me relative mr-4 h-16 w-16 rounded-md bg-white p-1">
+                  <div className="relative h-full w-full overflow-hidden rounded-md">
+                    <Image
+                      src="/ice.png"
+                      fill
+                      className="object-cover"
+                      alt=""
+                    />
+                  </div>
+                </div>
+                <div className="flex flex-col">
+                  <p className="text-xl font-medium">Crystalize</p>
+                  <p className="text-sm text-dark/80">
+                    Generate a merkle tree from file
+                  </p>
+                </div>
+              </div>
+              <div className="mb-8 h-px w-full bg-black/10"></div>
             </div>
             <div className="flex flex-col">
               <p className="mb-2 font-medium">Amount to distribute</p>
               <input
-                className="h-12 w-full mb-4 p-4 bg-[#efeff7ff] rounded-lg"
+                className="mb-4 h-12 w-full rounded-lg bg-[#efeff7ff] p-4"
                 type="text"
                 value={amount}
                 onChange={handleAmountChange}
@@ -88,11 +103,11 @@ export default function Home() {
                 type="file"
                 accept=".txt"
                 id="fileInput"
-                className="w-full px-4 py-4 border border-gray-300 rounded-md text-sm leading-4 font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                className="w-full rounded-md border border-gray-300 bg-white p-4 text-sm font-medium leading-4 text-gray-700 hover:bg-gray-50 focus:border-blue-500 focus:outline-none focus:ring-blue-500"
               />
               <button
                 onClick={handleUpload}
-                className="mt-4 flex h-12 w-full border-slate-500 border items-center justify-center rounded-lg bg-dark text-white"
+                className="mt-4 flex h-12 w-full items-center justify-center rounded-lg border border-slate-500 bg-dark text-white"
               >
                 {isLoading ? (
                   <ClipLoader size={20} color="white" />
@@ -106,7 +121,7 @@ export default function Home() {
               {data && (
                 <button
                   onClick={downloadJson}
-                  className="mt-4 flex border-slate-500 border h-12 w-full items-center justify-center rounded-lg bg-dark text-white"
+                  className="mt-4 flex h-12 w-full items-center justify-center rounded-lg border border-slate-500 bg-dark text-white"
                 >
                   Download JSON
                 </button>
