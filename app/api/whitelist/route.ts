@@ -25,9 +25,7 @@ type Data = {
   };
 };
 
-export const config = {
-  runtime: "experimental-edge",
-};
+export const runtime = "edge";
 
 const computeInfo = async (
   holders: string[],
