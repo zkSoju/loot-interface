@@ -1,6 +1,6 @@
 "use client";
 
-import { Navbar } from "@/components/navbars";
+import { Navbar } from "@/components/navbar";
 import {
   RainbowKitProvider,
   getDefaultWallets,

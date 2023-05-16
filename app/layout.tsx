@@ -5,7 +5,7 @@ import "../styles/globals.css";
 import "../styles/tailwind.css";
 
 import type { Metadata } from "next";
-import { Wrapper } from "@/components/wrappers";
+import { Wrapper } from "@/components/wrapper";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://shareloot.xyz"),
