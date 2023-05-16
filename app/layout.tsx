@@ -7,12 +7,33 @@ import {
   RainbowKitProvider,
 } from "@rainbow-me/rainbowkit";
 import "@rainbow-me/rainbowkit/styles.css";
-import { NextSeo } from "next-seo";
 import { configureChains, createConfig, mainnet, WagmiConfig } from "wagmi";
 import { alchemyProvider } from "wagmi/providers/alchemy";
 import "../styles/globals.css";
 import "../styles/tailwind.css";
 import Navbar from "./Navbar";
+
+import type { Metadata } from "next";
+
+export const config: Metadata = {
+  title: "Share Loot",
+  description: "Share your Loot with the world",
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "https://shareloot.xyz",
+    title: "Share Loot",
+    description: "Share your Loot with the world",
+    images: [
+      {
+        url: "https://i.imgur.com/fvsVHuJ.png",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+  },
+};
 
 export default function RootLayout({
   children,
@@ -41,25 +62,7 @@ export default function RootLayout({
 
   return (
     <html>
-      <head>
-        <NextSeo
-          title="Share Loot"
-          description="Share your Loot with your friends and community."
-          openGraph={{
-            type: "website",
-            description: "Share your Loot with your friends and community.",
-            title: "Share Loot",
-            images: [
-              {
-                url: "https://i.imgur.com/fvsVHuJ.png",
-              },
-            ],
-          }}
-          twitter={{
-            cardType: "summary_large_image",
-          }}
-        />
-      </head>
+      <head></head>
       <body>
         <WagmiConfig config={config}>
           <RainbowKitProvider
