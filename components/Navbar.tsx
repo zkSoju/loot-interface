@@ -4,7 +4,7 @@ import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-const Navbar = () => {
+export function Navbar() {
   const [tokenAddress, setTokenAddress] = useState("");
   const router = useRouter();
 
@@ -33,6 +33,4 @@ const Navbar = () => {
       </form>
     </div>
   );
-};
-
-export default Navbar;
+}
