@@ -50,7 +50,7 @@ export default function RootLayout({
   );
 
   const { connectors } = getDefaultWallets({
-    appName: "Loot",
+    appName: "ShareLoot",
     chains,
   });
 
