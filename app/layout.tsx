@@ -7,6 +7,7 @@ import {
   RainbowKitProvider,
 } from "@rainbow-me/rainbowkit";
 import "@rainbow-me/rainbowkit/styles.css";
+import { NextSeo } from "next-seo";
 import { configureChains, createConfig, mainnet, WagmiConfig } from "wagmi";
 import { alchemyProvider } from "wagmi/providers/alchemy";
 import "../styles/globals.css";
@@ -40,7 +41,25 @@ export default function RootLayout({
 
   return (
     <html>
-      <head></head>
+      <head>
+        <NextSeo
+          title="Share Loot"
+          description="Share your Loot with your friends and community."
+          openGraph={{
+            type: "website",
+            description: "Share your Loot with your friends and community.",
+            title: "Share Loot",
+            images: [
+              {
+                url: "https://i.imgur.com/fvsVHuJ.png",
+              },
+            ],
+          }}
+          twitter={{
+            cardType: "summary_large_image",
+          }}
+        />
+      </head>
       <body>
         <WagmiConfig config={config}>
           <RainbowKitProvider
