@@ -4,8 +4,8 @@ import "@rainbow-me/rainbowkit/styles.css";
 import "../styles/globals.css";
 import "../styles/tailwind.css";
 
-import { Wrapper } from "@/components/Wrapper";
 import type { Metadata } from "next";
+import { Wrapper } from "@/components/Wrapper";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://shareloot.xyz"),

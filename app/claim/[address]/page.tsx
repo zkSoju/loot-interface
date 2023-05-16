@@ -28,15 +28,20 @@ export default function Home({ params }: { params: { address: string } }) {
 
   useEffect(() => {
     if (!address) return;
-    fetch(
-      `/api/existing/claim?` +
-        new URLSearchParams({
-          address: params.address,
-          user: address ?? "",
-        })
-    )
-      .then((res) => res.json())
-      .then((data) => setClaimData(data));
+
+    try {
+      fetch(
+        `/api/existing/claim?` +
+          new URLSearchParams({
+            address: params.address,
+            user: address ?? "",
+          })
+      )
+        .then((res) => res.json())
+        .then((data) => setClaimData(data));
+    } catch (e) {
+      console.log(e);
+    }
   }, [params.address, address]);
 
   console.log(claimData);
