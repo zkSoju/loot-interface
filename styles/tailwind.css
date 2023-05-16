@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 p {
-  @apply font-wagmi text-dark tracking-wide;
+  @apply font-wagmi text-white tracking-wide;
 }
 
 @font-face {

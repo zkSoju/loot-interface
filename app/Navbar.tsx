@@ -15,14 +15,14 @@ const Navbar = () => {
   };
 
   return (
-    <div className="fixed z-50 w-full px-24">
+    <div className="fixed z-50 flex w-full justify-center">
       <form
         onSubmit={handleSearchSubmit}
-        className="flex w-full items-center justify-center border-b border-white/5 px-8 py-4"
+        className="flex w-[42rem] items-center justify-center border-b border-white/5 py-4"
       >
         <input
           onChange={(e) => setTokenAddress(e.target.value)}
-          className="mr-4 h-10 w-96 rounded-lg bg-white p-4"
+          className="mr-4 h-10 w-full rounded-lg bg-dark p-4 text-white outline-none"
           type="text"
           value={tokenAddress}
           placeholder="Search the loot address"

@@ -6,7 +6,8 @@ module.exports = {
         wagmi: "Gilroy",
       },
       colors: {
-        dark: "#1f1f41",
+        dark: "#191a22",
+        sage: "#45ff79",
       },
     },
   },
