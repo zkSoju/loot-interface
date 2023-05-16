@@ -1,4 +1,4 @@
-export const spoilsOfWarAbi = [
+export const lootAbi = [
   {
     anonymous: false,
     inputs: [
@@ -82,6 +82,11 @@ export const spoilsOfWarAbi = [
         internalType: "bytes32",
         name: "_merkleRoot",
         type: "bytes32",
+      },
+      {
+        internalType: "uint256",
+        name: "_amount",
+        type: "uint256",
       },
     ],
     name: "initialize",

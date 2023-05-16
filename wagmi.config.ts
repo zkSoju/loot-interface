@@ -1,5 +1,5 @@
 import { clonesAbi } from "@/abis/Clones";
-import { spoilsOfWarAbi } from "@/abis/SpoilsOfWar";
+import { lootAbi } from "@/abis/Loot";
 import { defineConfig } from "@wagmi/cli";
 import { react } from "@wagmi/cli/plugins";
 import { erc20ABI } from "wagmi";
@@ -8,8 +8,8 @@ export default defineConfig({
   out: "src/generated.ts",
   contracts: [
     {
-      name: "SpoilsOfWar",
-      abi: spoilsOfWarAbi,
+      name: "Loot",
+      abi: lootAbi,
     },
     {
       name: "Clones",

@@ -3,9 +3,9 @@
 import { ClaimData } from "@/lib/types";
 import {
   useErc20Symbol,
-  usePrepareSpoilsOfWarClaim,
-  useSpoilsOfWarClaim,
-  useSpoilsOfWarToken,
+  useLootClaim,
+  useLootToken,
+  usePrepareLootClaim,
 } from "@/src/generated";
 import Image from "next/image";
 import { useEffect, useState } from "react";
@@ -15,7 +15,7 @@ export default function Home({ params }: { params: { address: string } }) {
   const [claimData, setClaimData] = useState<ClaimData | null>(null);
   const { address } = useAccount();
 
-  const { data: tokenData } = useSpoilsOfWarToken({
+  const { data: tokenData } = useLootToken({
     address: params.address as `0x${string}`,
   });
 
@@ -41,7 +41,7 @@ export default function Home({ params }: { params: { address: string } }) {
 
   console.log(claimData);
 
-  const { config: claimConfig } = usePrepareSpoilsOfWarClaim({
+  const { config: claimConfig } = usePrepareLootClaim({
     address: params.address as `0x${string}`,
     args: [
       address ?? "0x",
@@ -52,7 +52,7 @@ export default function Home({ params }: { params: { address: string } }) {
     enabled: !!claimData && !!address,
   });
 
-  const { write } = useSpoilsOfWarClaim(claimConfig);
+  const { write } = useLootClaim(claimConfig);
 
   return (
     <div>

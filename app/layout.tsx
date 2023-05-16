@@ -1,7 +1,11 @@
 "use client";
 /* eslint-disable @next/next/no-head-element */
 
-import { getDefaultWallets, RainbowKitProvider } from "@rainbow-me/rainbowkit";
+import {
+  getDefaultWallets,
+  midnightTheme,
+  RainbowKitProvider,
+} from "@rainbow-me/rainbowkit";
 import "@rainbow-me/rainbowkit/styles.css";
 import { goerli } from "viem/chains";
 import { configureChains, createConfig, WagmiConfig } from "wagmi";
@@ -40,7 +44,13 @@ export default function RootLayout({
       <head></head>
       <body>
         <WagmiConfig config={config}>
-          <RainbowKitProvider chains={chains}>
+          <RainbowKitProvider
+            chains={chains}
+            theme={midnightTheme({
+              accentColor: "#45ff79",
+              accentColorForeground: "black",
+            })}
+          >
             <div className="mx-auto">
               <Navbar />
               {children}

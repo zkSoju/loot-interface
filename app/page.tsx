@@ -3,18 +3,21 @@
 import { LootData } from "@/lib/types";
 import {
   useClonesClone,
+  useErc20Approve,
+  useLootInitialize,
   usePrepareClonesClone,
-  usePrepareSpoilsOfWarInitialize,
-  useSpoilsOfWarInitialize,
+  usePrepareErc20Approve,
+  usePrepareLootInitialize,
 } from "@/src/generated";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BsStars } from "react-icons/bs";
 import { ClipLoader } from "react-spinners";
+import { useWaitForTransaction } from "wagmi";
 
 export default function Home() {
   const [data, setData] = useState<LootData | null>(null);
-  const [root, setRoot] = useState("");
+  const [root, setRoot] = useState<string | null>();
   const [isLoading, setIsLoading] = useState(false);
   const [amount, setAmount] = useState("");
   const [tokenAddress, setTokenAddress] = useState("");
@@ -132,22 +135,50 @@ export default function Home() {
     args: [SPOILS_ADDRESS],
   });
 
-  const { writeAsync: clone } = useClonesClone(cloneConfig);
+  const { writeAsync: clone, data: cloneTxData } = useClonesClone(cloneConfig);
 
-  const { config: initConfig } = usePrepareSpoilsOfWarInitialize({
-    address: cloneData?.result as `0x${string}`,
-    args: [tokenAddress as `0x${string}`, (root as `0x${string}`) ?? "0x"],
-    enabled: !!root && !!cloneData?.result && !!tokenAddress,
+  const { isSuccess } = useWaitForTransaction({
+    hash: cloneTxData?.hash as `0x${string}`,
+    enabled: !!cloneTxData?.hash,
   });
 
-  const { writeAsync: init } = useSpoilsOfWarInitialize(initConfig);
+  const { config: initConfig } = usePrepareLootInitialize({
+    address: cloneData?.result as `0x${string}`,
+    args: [
+      tokenAddress as `0x${string}`,
+      (root as `0x${string}`) ?? "0x",
+      BigInt(amount),
+    ],
+    enabled: !!root && !!cloneData?.result && !!tokenAddress && !!amount,
+  });
+
+  const { write: init } = useLootInitialize(initConfig);
+
+  const { config: approveConfig } = usePrepareErc20Approve({
+    address: tokenAddress as `0x${string}`,
+    args: [cloneData?.result as `0x${string}`, BigInt(amount)],
+    enabled: !!cloneData?.result && !!tokenAddress && !!amount,
+  });
+
+  const { writeAsync: approve, data: approveData } =
+    useErc20Approve(approveConfig);
+
+  const { isSuccess: isApproveSuccess } = useWaitForTransaction({
+    hash: approveData?.hash as `0x${string}`,
+  });
 
   const handleCloneAndInit = async () => {
     await clone?.();
-    console.log(cloneData?.result);
+    await approve?.();
+
     await handleInitialize(cloneData?.result as `0x${string}`);
-    await init?.();
   };
+
+  useEffect(() => {
+    if (isSuccess && isApproveSuccess) {
+      init?.();
+    }
+  }, [init, isSuccess, root, isApproveSuccess]);
 
   return (
     <div>
@@ -312,7 +343,7 @@ export default function Home() {
                         type="file"
                         accept=".txt"
                         id="fileInput"
-                        className="mb-4 w-full rounded-md border border-white/10 bg-dark p-4 text-sm font-medium leading-4 text-sage hover:bg-gray-50 focus:outline-none"
+                        className="mb-4 w-full rounded-md border border-white/10 bg-dark p-4 text-sm font-medium leading-4 text-white focus:outline-none"
                       />
                       <button
                         onClick={handleCloneAndInit}
