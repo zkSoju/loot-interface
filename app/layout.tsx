@@ -4,9 +4,11 @@ import "@rainbow-me/rainbowkit/styles.css";
 import "../styles/globals.css";
 import "../styles/tailwind.css";
 
+import { Wrapper } from "@/components/Wrapper";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://shareloot.xyz"),
   title: "Share Loot",
   description: "Share your Loot with the world",
   openGraph: {
@@ -34,7 +36,9 @@ export default function RootLayout({
   return (
     <html>
       <head></head>
-      <body></body>
+      <body>
+        <Wrapper>{children}</Wrapper>
+      </body>
     </html>
   );
 }
