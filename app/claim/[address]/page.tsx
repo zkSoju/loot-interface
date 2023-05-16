@@ -11,8 +11,6 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 
-export const dynamic = "force-dynamic";
-
 export default function Home({ params }: { params: { address: string } }) {
   const [claimData, setClaimData] = useState<ClaimData | null>(null);
   const { address } = useAccount();
