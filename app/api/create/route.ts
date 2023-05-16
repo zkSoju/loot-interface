@@ -1,57 +1,11 @@
+import { computeInfo } from "@/lib/computeInfo";
+import { AddressInfo, Data, LeafInfo } from "@/lib/types";
 import keccak256 from "keccak256";
 import MerkleTree from "merkletreejs";
 import { NextRequest, NextResponse } from "next/server";
 import { encodePacked } from "viem";
 
-type ClaimInfo = {
-  [address: string]: number;
-};
-
-type AddressInfo = {
-  [address: string]: Buffer;
-};
-
-type LeafInfo = {
-  [leaf: string]: {
-    index: number;
-    amount: number;
-  };
-};
-
-type Data = {
-  [address: string]: {
-    index: number;
-    amount: number;
-    proof: string[];
-  };
-};
-
 // export const runtime = "edge";
-
-const computeInfo = async (
-  holders: string[],
-  totalAirdrop: number
-): Promise<ClaimInfo> => {
-  const addressCounts: ClaimInfo = {};
-
-  for (const holder of holders) {
-    if (addressCounts[holder]) {
-      addressCounts[holder]++;
-    } else {
-      addressCounts[holder] = 1;
-    }
-  }
-
-  const totalAddresses = holders.length;
-
-  const claimAmounts: ClaimInfo = {};
-
-  for (const [address, count] of Object.entries(addressCounts)) {
-    claimAmounts[address] = Math.floor((count / totalAddresses) * totalAirdrop);
-  }
-
-  return claimAmounts;
-};
 
 export async function POST(req: NextRequest) {
   try {

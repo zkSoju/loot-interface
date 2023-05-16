@@ -1,17 +1,63 @@
 "use client";
 
+import { LootData } from "@/lib/types";
+import {
+  useClonesClone,
+  usePrepareClonesClone,
+  usePrepareSpoilsOfWarInitialize,
+  useSpoilsOfWarInitialize,
+} from "@/src/generated";
 import Image from "next/image";
 import { useState } from "react";
 import { BsStars } from "react-icons/bs";
 import { ClipLoader } from "react-spinners";
+import { getAddress } from "viem";
 
 export default function Home() {
-  const [data, setData] = useState(null);
+  const [data, setData] = useState<LootData | null>(null);
+  const [root, setRoot] = useState();
   const [isLoading, setIsLoading] = useState(false);
   const [amount, setAmount] = useState("");
+  const [tokenAddress, setTokenAddress] = useState("");
 
-  const handleAmountChange = (event: any) => {
-    setAmount(event.target.value);
+  const CLONES_ADDRESS = "0x33b475480e9e426d974e914bac2250be9273459c";
+  const SPOILS_ADDRESS = "0xBb0aeb9C90b2Ef36d36C318962f11aC78C24a457";
+
+  const handleInitialize = async () => {
+    setIsLoading(true);
+
+    const fileInput = document.getElementById("fileInput") as HTMLInputElement;
+
+    const file = fileInput.files?.[0];
+    const reader = new FileReader();
+
+    reader.onload = async (event: any) => {
+      const fileContent = event.target.result;
+
+      // Now, you can send fileContent to your API route
+      const response = await fetch(
+        "/api/existing?" +
+          new URLSearchParams({
+            amount: amount.toString(),
+            address: "0x33b475480e9e426d974e914bac2250be9273459c",
+          }),
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ fileContent }),
+        }
+      );
+
+      const data = await response.json();
+      setRoot(data.root);
+
+      // Do something with the response data
+      setIsLoading(false);
+    };
+
+    if (file) {
+      reader.readAsText(file);
+    }
   };
 
   const handleUpload = async () => {
@@ -27,7 +73,7 @@ export default function Home() {
 
       // Now, you can send fileContent to your API route
       const response = await fetch(
-        "/api/whitelist?" +
+        "/api/create?" +
           new URLSearchParams({
             amount: amount.toString(),
           }),
@@ -82,6 +128,29 @@ export default function Home() {
     }
   };
 
+  const { config: cloneConfig } = usePrepareClonesClone({
+    address: CLONES_ADDRESS,
+    args: [SPOILS_ADDRESS],
+  });
+
+  const { writeAsync: clone } = useClonesClone(cloneConfig);
+
+  const { config: initConfig } = usePrepareSpoilsOfWarInitialize({
+    address: "0xaBfa13C205147455279574E950be996B7254637b",
+    args: [
+      getAddress("0x33b475480e9e426d974e914bac2250be9273459c"),
+      (data?.root as `0x${string}`) ?? "0x",
+    ],
+    enabled: !!data?.root,
+  });
+
+  const { writeAsync: init } = useSpoilsOfWarInitialize(initConfig);
+
+  const handleCloneAndInit = async () => {
+    await clone?.();
+    await init?.();
+  };
+
   return (
     <div>
       <div className="relative z-10 flex h-screen w-full items-center justify-center">
@@ -101,7 +170,7 @@ export default function Home() {
                   </div>
                 </div>
                 <div className="flex flex-col">
-                  <p className="text-xl font-medium">Token Bounty</p>
+                  <p className="text-xl font-medium">Loot</p>
                   <p className="text-sm text-dark/80">
                     Distribute tokens to your community and more
                   </p>
@@ -113,30 +182,50 @@ export default function Home() {
               {!isConfirmed && (
                 <>
                   <p className="mb-2 font-medium">Actions</p>
-                  <div className="mb-2 flex h-40 w-full">
+                  <div className="relative mb-2 flex h-72 w-full">
                     <div
-                      className={`mr-2 flex h-full w-full cursor-pointer flex-col justify-end rounded-md bg-[#efeff7ff] p-4 ${
-                        selectedAction === "existing" && "border-2 border-dark"
+                      className={`relative mr-2 flex h-full w-full cursor-pointer flex-col justify-end overflow-hidden rounded-md bg-[#efeff7ff] p-4 ${
+                        selectedAction === "existing" &&
+                        "outline outline-offset-1 outline-dark"
                       }`}
                       onClick={() => selectAction("existing")}
                     >
-                      <div className="mb-1 flex items-center">
-                        <p className="mr-2 font-medium">Starter project</p>
-                        <p className="rounded-md bg-[#ffe4ae] px-2 py-1 text-xs text-[#745003]">
-                          RECCOMENDED
+                      <div className="absolute left-0 top-0 h-56 w-full">
+                        <Image
+                          src="/coin.png"
+                          fill
+                          alt=""
+                          className="object-cover gradient-mask-b-0"
+                        />
+                      </div>
+                      <div className="relative flex flex-col">
+                        <div className="mb-1 flex items-center">
+                          <p className="mr-2 font-medium">Starter project</p>
+                          <p className="rounded-md bg-[#ffe4ae] px-2 py-1 text-xs text-[#745003]">
+                            RECCOMENDED
+                          </p>
+                        </div>
+                        <p className="text-xs text-dark/80">
+                          Deploy your own rewards contract using an existing
+                          token in a few clicks.
                         </p>
                       </div>
-                      <p className="text-xs text-dark/80">
-                        Deploy your own rewards contract using an existing token
-                        in a few clicks.
-                      </p>
                     </div>
                     <div
-                      className={`flex h-full w-full cursor-pointer flex-col justify-end rounded-md bg-[#efeff7ff] p-4 ${
-                        selectedAction === "create" && "border-2 border-dark"
+                      className={`relative flex h-full w-full cursor-pointer flex-col justify-end overflow-hidden rounded-md bg-[#efeff7ff] p-4 ${
+                        selectedAction === "create" &&
+                        "outline outline-offset-1 outline-dark"
                       }`}
                       onClick={() => selectAction("create")}
                     >
+                      <div className="absolute left-0 top-0 h-56 w-full">
+                        <Image
+                          src="/coin.png"
+                          fill
+                          alt=""
+                          className="object-cover gradient-mask-b-0"
+                        />
+                      </div>
                       <p className="mb-1 font-medium">Manual installation</p>
                       <p className="text-xs text-dark/80">
                         Generate a merkle tree without deploying a contract and
@@ -149,7 +238,7 @@ export default function Home() {
               {!isConfirmed ? (
                 <button
                   onClick={() => setIsConfirmed(true)}
-                  className="mt-4 flex h-12 w-full items-center justify-center rounded-lg border border-slate-500 bg-dark text-white"
+                  className="mt-4 flex h-12 w-full items-center justify-center rounded-lg border border-slate-500 bg-dark text-white hover:bg-dark/90"
                 >
                   Confirm Action
                 </button>
@@ -177,7 +266,7 @@ export default function Home() {
                       />
                       <button
                         onClick={handleUpload}
-                        className="mt-4 flex h-12 w-full items-center justify-center rounded-lg border border-slate-500 bg-dark text-white"
+                        className="mt-4 flex h-12 w-full items-center justify-center rounded-lg border border-slate-500 bg-dark text-white hover:bg-dark/90"
                       >
                         {isLoading ? (
                           <ClipLoader size={20} color="white" />
@@ -191,7 +280,7 @@ export default function Home() {
                       {data && (
                         <button
                           onClick={downloadJson}
-                          className="mt-4 flex h-12 w-full items-center justify-center rounded-lg border border-slate-500 bg-dark text-white"
+                          className="mt-4 flex h-12 w-full items-center justify-center rounded-lg border border-slate-500 bg-dark text-white hover:bg-dark/90"
                         >
                           Download JSON
                         </button>
@@ -201,10 +290,10 @@ export default function Home() {
                     <>
                       <p className="mb-2 font-medium">Token address</p>
                       <input
-                        onChange={(e) => handleChange(e, setAmount)}
+                        onChange={(e) => setTokenAddress(e.target.value)}
                         className="mb-4 h-12 w-full rounded-lg bg-[#efeff7ff] p-4"
                         type="text"
-                        value={amount}
+                        value={tokenAddress}
                         placeholder="Enter the token address"
                       />
                       <p className="mb-2 font-medium">Amount to distribute</p>
@@ -226,14 +315,14 @@ export default function Home() {
                         className="mb-4 w-full rounded-md border border-gray-300 bg-white p-4 text-sm font-medium leading-4 text-gray-700 hover:bg-gray-50 focus:border-blue-500 focus:outline-none focus:ring-blue-500"
                       />
                       <button
-                        onClick={handleUpload}
-                        className="mt-4 flex h-12 w-full items-center justify-center rounded-lg border border-slate-500 bg-dark text-white"
+                        onClick={handleCloneAndInit}
+                        className="mt-4 flex h-12 w-full items-center justify-center rounded-lg border border-slate-500 bg-dark text-white hover:bg-dark/90"
                       >
                         {isLoading ? (
                           <ClipLoader size={20} color="white" />
                         ) : (
                           <div className="flex items-center">
-                            <p className="text-white">Distribute</p>
+                            <p className="text-white">Create</p>
                             <BsStars className="ml-2 text-white" />
                           </div>
                         )}
@@ -241,7 +330,7 @@ export default function Home() {
                       {data && (
                         <button
                           onClick={downloadJson}
-                          className="mt-4 flex h-12 w-full items-center justify-center rounded-lg border border-slate-500 bg-dark text-white"
+                          className="mt-4 flex h-12 w-full items-center justify-center rounded-lg border border-slate-500 bg-dark text-white hover:bg-dark/90"
                         >
                           Download JSON
                         </button>
