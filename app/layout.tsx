@@ -7,8 +7,7 @@ import {
   RainbowKitProvider,
 } from "@rainbow-me/rainbowkit";
 import "@rainbow-me/rainbowkit/styles.css";
-import { goerli } from "viem/chains";
-import { configureChains, createConfig, WagmiConfig } from "wagmi";
+import { configureChains, createConfig, mainnet, WagmiConfig } from "wagmi";
 import { alchemyProvider } from "wagmi/providers/alchemy";
 import "../styles/globals.css";
 import "../styles/tailwind.css";
@@ -20,7 +19,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   const { chains, publicClient } = configureChains(
-    [goerli],
+    [mainnet],
     [
       alchemyProvider({
         apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY ?? "",
@@ -29,7 +28,7 @@ export default function RootLayout({
   );
 
   const { connectors } = getDefaultWallets({
-    appName: "Saint",
+    appName: "Loot",
     chains,
   });
 

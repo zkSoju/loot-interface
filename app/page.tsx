@@ -22,8 +22,8 @@ export default function Home() {
   const [amount, setAmount] = useState("");
   const [tokenAddress, setTokenAddress] = useState("");
 
-  const CLONES_ADDRESS = "0x33b475480e9e426d974e914bac2250be9273459c";
-  const SPOILS_ADDRESS = "0xBb0aeb9C90b2Ef36d36C318962f11aC78C24a457";
+  const CLONES_ADDRESS = "0xb1432c4e51c1bd10435f5a0754f1d86d7eddb694";
+  const SPOILS_ADDRESS = "0xf86e36eacfcb23d9616b27cf5c1324c5597995a4";
 
   const handleInitialize = async (address: string) => {
     setIsLoading(true);
