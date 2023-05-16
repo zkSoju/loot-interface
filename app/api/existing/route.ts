@@ -1,6 +1,6 @@
 import { computeInfo } from "@/lib/computeInfo";
+import { db } from "@/lib/db";
 import { AddressInfo, Data, LeafInfo } from "@/lib/types";
-import { kv } from "@vercel/kv";
 import keccak256 from "keccak256";
 import MerkleTree from "merkletreejs";
 import { NextRequest, NextResponse } from "next/server";
@@ -61,7 +61,18 @@ export async function POST(req: NextRequest) {
       };
     }
 
-    await kv.json.set(address, "$", data);
+    await db.loot.upsert({
+      create: {
+        lootAddress: address,
+        data: data,
+      },
+      update: {
+        data: data,
+      },
+      where: {
+        lootAddress: address,
+      },
+    });
 
     return NextResponse.json({ root: root });
   } catch (e) {

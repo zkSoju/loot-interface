@@ -22,7 +22,7 @@ export default function Home() {
   const CLONES_ADDRESS = "0x33b475480e9e426d974e914bac2250be9273459c";
   const SPOILS_ADDRESS = "0xBb0aeb9C90b2Ef36d36C318962f11aC78C24a457";
 
-  const handleInitialize = async () => {
+  const handleInitialize = async (address: string) => {
     setIsLoading(true);
 
     const fileInput = document.getElementById("fileInput") as HTMLInputElement;
@@ -38,7 +38,7 @@ export default function Home() {
         "/api/existing?" +
           new URLSearchParams({
             amount: amount.toString(),
-            address: "0x33b475480e9e426d974e914bac2250be9273459c",
+            address: address,
           }),
         {
           method: "POST",
@@ -144,7 +144,8 @@ export default function Home() {
 
   const handleCloneAndInit = async () => {
     await clone?.();
-    await handleInitialize();
+    console.log(cloneData?.result);
+    await handleInitialize(cloneData?.result as `0x${string}`);
     await init?.();
   };
 
@@ -235,7 +236,7 @@ export default function Home() {
               {!isConfirmed ? (
                 <button
                   onClick={() => setIsConfirmed(true)}
-                  className="mt-4 flex h-12 w-full items-center justify-center rounded-lg border border-slate-500 bg-dark text-white hover:bg-dark/90"
+                  className="mt-4 flex h-12 w-full items-center justify-center rounded-lg border border-sky-500 bg-sky-400 text-white hover:bg-sky-500"
                 >
                   Confirm Action
                 </button>
@@ -263,7 +264,7 @@ export default function Home() {
                       />
                       <button
                         onClick={handleUpload}
-                        className="mt-4 flex h-12 w-full items-center justify-center rounded-lg border border-slate-500 bg-dark text-white hover:bg-dark/90"
+                        className="mt-4 flex h-12 w-full items-center justify-center rounded-lg border border-sky-500 bg-sky-400 text-white hover:bg-sky-500"
                       >
                         {isLoading ? (
                           <ClipLoader size={20} color="white" />
@@ -277,7 +278,7 @@ export default function Home() {
                       {data && (
                         <button
                           onClick={downloadJson}
-                          className="mt-4 flex h-12 w-full items-center justify-center rounded-lg border border-slate-500 bg-dark text-white hover:bg-dark/90"
+                          className="mt-4 flex h-12 w-full items-center justify-center rounded-lg border border-sky-500 bg-sky-400 text-white hover:bg-sky-500"
                         >
                           Download JSON
                         </button>
@@ -313,7 +314,7 @@ export default function Home() {
                       />
                       <button
                         onClick={handleCloneAndInit}
-                        className="mt-4 flex h-12 w-full items-center justify-center rounded-lg border border-slate-500 bg-dark text-white hover:bg-dark/90"
+                        className="mt-4 flex h-12 w-full items-center justify-center rounded-lg border border-sky-500 bg-sky-400 text-white hover:bg-sky-500"
                       >
                         {isLoading ? (
                           <ClipLoader size={20} color="white" />

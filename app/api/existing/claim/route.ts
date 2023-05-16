@@ -1,8 +1,8 @@
+import { db } from "@/lib/db";
 import { LootData } from "@/lib/types";
-import { kv } from "@vercel/kv";
 import { NextRequest, NextResponse } from "next/server";
 
-export const runtime = "edge";
+// export const runtime = "edge";
 
 export async function GET(req: NextRequest) {
   try {
@@ -13,19 +13,29 @@ export async function GET(req: NextRequest) {
       return NextResponse.error();
     }
 
-    const fileContents: LootData = await kv.json.get(address);
+    const loot = await db.loot.findUnique({
+      where: {
+        lootAddress: address,
+      },
+    });
 
-    const userClaim = fileContents?.data[user as string];
-
-    if (!userClaim) {
-      return NextResponse.json({
-        index: -1,
-        amount: 0,
-        proof: [],
-      });
+    if (!loot) {
+      return NextResponse.error();
     }
 
-    return NextResponse.json(userClaim);
+    const data = loot.data as LootData;
+
+    const userClaim = data.data?.[user as string];
+
+    if (userClaim) {
+      return NextResponse.json(userClaim);
+    }
+
+    return NextResponse.json({
+      index: -1,
+      amount: 0,
+      proof: [],
+    });
   } catch (e) {
     console.log(e);
     return NextResponse.error();
