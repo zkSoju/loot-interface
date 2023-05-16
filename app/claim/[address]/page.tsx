@@ -63,15 +63,24 @@ export default function Home({ params }: { params: { address: string } }) {
               <div className="absolute left-0 top-0 h-full w-full overflow-hidden rounded-md gradient-mask-l-0">
                 <Image src="/coins.png" fill className="object-cover" alt="" />
               </div>
-              <p className="relative">
-                You have {claimData?.amount} {symbolData ?? "tokens"} to claim.
-              </p>
-              <button
-                onClick={() => write?.()}
-                className="relative flex h-12 w-48 items-center justify-center rounded-lg bg-sage text-dark hover:bg-sage/90"
-              >
-                Claim
-              </button>
+
+              {tokenData &&
+              tokenData !== "0x0000000000000000000000000000000000000000" ? (
+                <>
+                  <p className="relative">
+                    You have ${claimData?.amount} ${symbolData ?? "tokens"} to
+                    claim.
+                  </p>
+                  <button
+                    onClick={() => write?.()}
+                    className="relative flex h-12 w-48 items-center justify-center rounded-lg bg-sage text-dark hover:bg-sage/90"
+                  >
+                    Claim
+                  </button>
+                </>
+              ) : (
+                <p className="relative">Loot not initialized.</p>
+              )}
             </div>
           </div>
         </div>

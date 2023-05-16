@@ -12,6 +12,7 @@ import {
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { BsStars } from "react-icons/bs";
+import { FaCheck, FaRegCopy } from "react-icons/fa";
 import { ClipLoader } from "react-spinners";
 import { useWaitForTransaction } from "wagmi";
 
@@ -21,6 +22,7 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [amount, setAmount] = useState("");
   const [tokenAddress, setTokenAddress] = useState("");
+  const [isComplete, setIsComplete] = useState(false);
 
   const CLONES_ADDRESS = "0xb1432c4e51c1bd10435f5a0754f1d86d7eddb694";
   const SPOILS_ADDRESS = "0xf86e36eacfcb23d9616b27cf5c1324c5597995a4";
@@ -152,7 +154,7 @@ export default function Home() {
     enabled: !!root && !!cloneData?.result && !!tokenAddress && !!amount,
   });
 
-  const { write: init } = useLootInitialize(initConfig);
+  const { writeAsync: init } = useLootInitialize(initConfig);
 
   const { config: approveConfig } = usePrepareErc20Approve({
     address: tokenAddress as `0x${string}`,
@@ -175,10 +177,30 @@ export default function Home() {
   };
 
   useEffect(() => {
-    if (isSuccess && isApproveSuccess) {
-      init?.();
-    }
+    (async () => {
+      if (isSuccess && isApproveSuccess) {
+        await init?.();
+
+        setIsComplete(true);
+      }
+    })();
   }, [init, isSuccess, root, isApproveSuccess]);
+
+  const [isCopied, setIsCopied] = useState(false);
+
+  const handleCopyClick = async (textToCopy: string) => {
+    try {
+      await navigator.clipboard.writeText(textToCopy);
+      setIsCopied(true);
+    } catch (err) {
+      console.error("Failed to copy text: ", err);
+    }
+  };
+
+  // Reset the copy feedback after 3 seconds
+  if (isCopied) {
+    setTimeout(() => setIsCopied(false), 3000);
+  }
 
   return (
     <div>
@@ -319,52 +341,75 @@ export default function Home() {
                     </>
                   ) : (
                     <>
-                      <p className="mb-2 font-medium">Token address</p>
-                      <input
-                        onChange={(e) => setTokenAddress(e.target.value)}
-                        className="mb-4 h-12 w-full rounded-lg border border-white/10 bg-dark p-4 text-white outline-none"
-                        type="text"
-                        value={tokenAddress}
-                        placeholder="Enter the token address"
-                      />
-                      <p className="mb-2 font-medium">Amount to distribute</p>
-                      <input
-                        onChange={(e) => handleChange(e, setAmount)}
-                        className="mb-4 h-12 w-full rounded-lg border border-white/10 bg-dark p-4 text-white outline-none"
-                        type="text"
-                        value={amount}
-                        placeholder="Enter the amount of tokens to distribute"
-                      />
-                      <p className="mb-2 font-medium">
-                        Whitelist file{" "}
-                        <span className="opacity-50">(.txt)</span>
-                      </p>
-                      <input
-                        type="file"
-                        accept=".txt"
-                        id="fileInput"
-                        className="mb-4 w-full rounded-md border border-white/10 bg-dark p-4 text-sm font-medium leading-4 text-white focus:outline-none"
-                      />
-                      <button
-                        onClick={handleCloneAndInit}
-                        className="mt-4 flex h-12 w-full items-center justify-center rounded-lg bg-sage text-dark hover:bg-sage/90"
-                      >
-                        {isLoading ? (
-                          <ClipLoader size={20} color="black" />
-                        ) : (
-                          <div className="flex items-center">
-                            <p className="text-dark">Create</p>
-                            <BsStars className="ml-2 text-dark" />
+                      {isComplete ? (
+                        <>
+                          <p className="font-medium">Your Loot address</p>
+                          <p className="mb-4 text-sm text-white/80">
+                            Save this address for future use
+                          </p>
+                          <div className="flex h-12 w-full items-center justify-between rounded-lg border border-white/10 bg-dark p-4 text-white outline-none">
+                            <p>{cloneData?.result}</p>
+                            <button
+                              onClick={() =>
+                                handleCopyClick(cloneData?.result ?? "")
+                              }
+                            >
+                              {isCopied ? <FaCheck /> : <FaRegCopy />}
+                            </button>
                           </div>
-                        )}
-                      </button>
-                      {data && (
-                        <button
-                          onClick={downloadJson}
-                          className="mt-4 flex h-12 w-full items-center justify-center rounded-lg border border-slate-500 bg-dark text-white hover:bg-dark/90"
-                        >
-                          Download JSON
-                        </button>
+                        </>
+                      ) : (
+                        <>
+                          <p className="mb-2 font-medium">Token address</p>
+                          <input
+                            onChange={(e) => setTokenAddress(e.target.value)}
+                            className="mb-4 h-12 w-full rounded-lg border border-white/10 bg-dark p-4 text-white outline-none"
+                            type="text"
+                            value={tokenAddress}
+                            placeholder="Enter the token address"
+                          />
+                          <p className="mb-2 font-medium">
+                            Amount to distribute
+                          </p>
+                          <input
+                            onChange={(e) => handleChange(e, setAmount)}
+                            className="mb-4 h-12 w-full rounded-lg border border-white/10 bg-dark p-4 text-white outline-none"
+                            type="text"
+                            value={amount}
+                            placeholder="Enter the amount of tokens to distribute"
+                          />
+                          <p className="mb-2 font-medium">
+                            Whitelist file{" "}
+                            <span className="opacity-50">(.txt)</span>
+                          </p>
+                          <input
+                            type="file"
+                            accept=".txt"
+                            id="fileInput"
+                            className="mb-4 w-full rounded-md border border-white/10 bg-dark p-4 text-sm font-medium leading-4 text-white focus:outline-none"
+                          />
+                          <button
+                            onClick={handleCloneAndInit}
+                            className="mt-4 flex h-12 w-full items-center justify-center rounded-lg bg-sage text-dark hover:bg-sage/90"
+                          >
+                            {isLoading ? (
+                              <ClipLoader size={20} color="black" />
+                            ) : (
+                              <div className="flex items-center">
+                                <p className="text-dark">Create</p>
+                                <BsStars className="ml-2 text-dark" />
+                              </div>
+                            )}
+                          </button>
+                          {data && (
+                            <button
+                              onClick={downloadJson}
+                              className="mt-4 flex h-12 w-full items-center justify-center rounded-lg border border-slate-500 bg-dark text-white hover:bg-dark/90"
+                            >
+                              Download JSON
+                            </button>
+                          )}
+                        </>
                       )}
                     </>
                   )}
