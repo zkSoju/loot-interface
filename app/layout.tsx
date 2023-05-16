@@ -15,7 +15,7 @@ import Navbar from "./Navbar";
 
 import type { Metadata } from "next";
 
-export const config: Metadata = {
+export const metadata: Metadata = {
   title: "Share Loot",
   description: "Share your Loot with the world",
   openGraph: {
