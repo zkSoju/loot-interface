@@ -11,11 +11,10 @@ import Image from "next/image";
 import { useState } from "react";
 import { BsStars } from "react-icons/bs";
 import { ClipLoader } from "react-spinners";
-import { getAddress } from "viem";
 
 export default function Home() {
   const [data, setData] = useState<LootData | null>(null);
-  const [root, setRoot] = useState();
+  const [root, setRoot] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [amount, setAmount] = useState("");
   const [tokenAddress, setTokenAddress] = useState("");
@@ -128,7 +127,7 @@ export default function Home() {
     }
   };
 
-  const { config: cloneConfig } = usePrepareClonesClone({
+  const { data: cloneData, config: cloneConfig } = usePrepareClonesClone({
     address: CLONES_ADDRESS,
     args: [SPOILS_ADDRESS],
   });
@@ -136,18 +135,16 @@ export default function Home() {
   const { writeAsync: clone } = useClonesClone(cloneConfig);
 
   const { config: initConfig } = usePrepareSpoilsOfWarInitialize({
-    address: "0xaBfa13C205147455279574E950be996B7254637b",
-    args: [
-      getAddress("0x33b475480e9e426d974e914bac2250be9273459c"),
-      (data?.root as `0x${string}`) ?? "0x",
-    ],
-    enabled: !!data?.root,
+    address: cloneData?.result as `0x${string}`,
+    args: [tokenAddress as `0x${string}`, (root as `0x${string}`) ?? "0x"],
+    enabled: !!root && !!cloneData?.result && !!tokenAddress,
   });
 
   const { writeAsync: init } = useSpoilsOfWarInitialize(initConfig);
 
   const handleCloneAndInit = async () => {
     await clone?.();
+    await handleInitialize();
     await init?.();
   };
 
