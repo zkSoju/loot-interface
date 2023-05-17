@@ -71,11 +71,12 @@ export function ActionMenu() {
         onClick={() => {
           if (selectedAction === "create") {
             router.push("/create");
-          } else {
+          } else if (selectedAction === "existing") {
             router.push("/generate");
           }
         }}
-        className="mt-4 flex h-12 w-full items-center justify-center rounded-lg bg-sage text-dark hover:bg-sage/90"
+        disabled={!selectedAction}
+        className="mt-4 flex h-12 w-full items-center justify-center rounded-lg bg-sage text-dark hover:bg-sage/90 disabled:cursor-default disabled:opacity-50"
       >
         Confirm
       </button>

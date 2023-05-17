@@ -104,12 +104,7 @@ export function CreateForm() {
       <button
         type="submit"
         disabled={!isValid || isLoading}
-        className={`mt-4 flex h-12 w-full items-center justify-center rounded-lg bg-sage text-dark hover:bg-sage/90
-                              ${
-                                !isValid || isLoading
-                                  ? "cursor-default opacity-50"
-                                  : ""
-                              }`}
+        className="mt-4 flex h-12 w-full items-center justify-center rounded-lg bg-sage text-dark hover:bg-sage/90 disabled:cursor-default disabled:opacity-50"
       >
         {isLoading ? (
           <ClipLoader size={20} color="black" />
