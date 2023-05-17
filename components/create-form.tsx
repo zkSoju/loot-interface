@@ -14,6 +14,15 @@ export function CreateForm() {
   } = useForm();
   const [data, setData] = useState<LootData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [amount, setAmount] = useState("");
+
+  const handleAmountChange = (e: any) => {
+    const value = e.target.value;
+    // Check if the input is a number
+    if (/^[0-9\b]+$/.test(value)) {
+      setAmount(value);
+    }
+  };
 
   const handleUpload = async (formData: any) => {
     setIsLoading(true);
@@ -74,6 +83,8 @@ export function CreateForm() {
             message: "Invalid amount",
           },
         })}
+        value={amount}
+        onChange={handleAmountChange}
         className="mb-4 h-12 w-full rounded-lg border border-white/10 bg-dark p-4 text-white outline-none"
         type="text"
         placeholder="Enter the amount of tokens to distribute"
