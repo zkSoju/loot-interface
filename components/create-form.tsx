@@ -1,3 +1,5 @@
+"use client";
+
 import { LootData } from "@/lib/types";
 import { useState } from "react";
 import { useForm } from "react-hook-form";

@@ -29,19 +29,21 @@ export function UserClaim({ lootAddress }: { lootAddress: string }) {
   useEffect(() => {
     if (!address) return;
 
-    try {
-      fetch(
-        `/api/existing/claim?` +
-          new URLSearchParams({
-            address: lootAddress,
-            user: address ?? "",
-          })
-      )
-        .then((res) => res.json())
-        .then((data) => setClaimData(data));
-    } catch (e) {
-      console.log(e);
-    }
+    fetch(
+      `/api/existing/claim?` +
+        new URLSearchParams({
+          address: lootAddress,
+          user: address ?? "",
+        })
+    )
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        return res.json();
+      })
+      .then((data) => setClaimData(data))
+      .catch((e) => console.log(e));
   }, [lootAddress, address]);
 
   console.log(claimData);

@@ -38,7 +38,6 @@ export async function GET(req: NextRequest) {
       proof: [],
     });
   } catch (e) {
-    console.log(e);
     return NextResponse.error();
   }
 }
