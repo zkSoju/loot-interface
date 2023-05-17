@@ -24,18 +24,26 @@ export function ExistingForm() {
   const [isCopied, setIsCopied] = useState(false);
   const { address } = useAccount();
   const { openConnectModal } = useConnectModal();
+  const [amount, setAmount] = useState("");
 
   const {
     register,
     handleSubmit,
     formState: { errors, isValid },
     watch,
+    setValue,
   } = useForm();
+
+  const handleAmountChange = (e: any) => {
+    const value = e.target.value;
+    // Check if the input is a number
+    if (/^[0-9\b]+$/.test(value)) {
+      setAmount(value);
+    }
+  };
 
   const CLONES_ADDRESS = "0xb1432c4e51c1bd10435f5a0754f1d86d7eddb694";
   const SPOILS_ADDRESS = "0xf86e36eacfcb23d9616b27cf5c1324c5597995a4";
-
-  const amount = watch("amount");
 
   const { data: cloneData, config: cloneConfig } = usePrepareClonesClone({
     address: CLONES_ADDRESS,
@@ -63,7 +71,7 @@ export function ExistingForm() {
 
   const { config: approveConfig } = usePrepareErc20Approve({
     address: tokenAddress as `0x${string}`,
-    args: [cloneData?.result as `0x${string}`, BigInt(amount)],
+    args: [cloneData?.result as `0x${string}`, BigInt(amount ?? "0")],
     enabled: !!cloneData?.result && !!tokenAddress && !!amount,
   });
 
@@ -180,6 +188,8 @@ export function ExistingForm() {
               required: true,
               pattern: /^[0-9\b]+$/,
             })}
+            value={amount}
+            onChange={handleAmountChange}
             className="mb-4 h-12 w-full rounded-lg border border-white/10 bg-dark p-4 text-white outline-none"
             type="text"
             placeholder="Enter the amount of tokens to distribute"
