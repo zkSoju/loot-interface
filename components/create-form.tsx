@@ -74,7 +74,7 @@ export function CreateForm() {
 
   return (
     <form onSubmit={handleSubmit(handleUpload)}>
-      <p className="mb-2 font-medium">Amount to distribute</p>
+      <p className="mb-2 font-medium">Amount for each instance</p>
       <input
         {...register("amount", {
           required: "Amount is required",
