@@ -182,7 +182,7 @@ export function ExistingForm() {
           />
           {errors.tokenAddress && <span>This field is required</span>}
 
-          <p className="mb-2 font-medium">Amount to distribute</p>
+          <p className="mb-2 font-medium">Amount for each instance</p>
           <input
             {...register("amount", {
               required: true,
