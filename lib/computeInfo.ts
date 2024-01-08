@@ -2,7 +2,7 @@ import { ClaimInfo } from "@/lib/types";
 
 export const computeInfo = async (
   holders: string[],
-  totalAirdrop: number
+  amountForEach: number
 ): Promise<ClaimInfo> => {
   const addressCounts: ClaimInfo = {};
 
@@ -19,7 +19,7 @@ export const computeInfo = async (
   const claimAmounts: ClaimInfo = {};
 
   for (const [address, count] of Object.entries(addressCounts)) {
-    claimAmounts[address] = Math.floor((count / totalAddresses) * totalAirdrop);
+    claimAmounts[address] = count * amountForEach;
   }
 
   return claimAmounts;
