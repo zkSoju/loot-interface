@@ -14,12 +14,10 @@ export const computeInfo = async (
     }
   }
 
-  const totalAddresses = holders.length;
-
   const claimAmounts: ClaimInfo = {};
 
   for (const [address, count] of Object.entries(addressCounts)) {
-    claimAmounts[address] = count * amountForEach;
+    claimAmounts[address.toLowerCase()] = count * amountForEach;
   }
 
   return claimAmounts;
