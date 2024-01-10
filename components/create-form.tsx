@@ -87,7 +87,7 @@ export function CreateForm() {
         onChange={handleAmountChange}
         className="mb-4 h-12 w-full rounded-lg border border-white/10 bg-dark p-4 text-white outline-none"
         type="text"
-        placeholder="Enter the amount of tokens to distribute"
+        placeholder="0"
       />
       <p className="mb-2 font-medium">
         Whitelist file <span className="opacity-80">(.txt)</span>

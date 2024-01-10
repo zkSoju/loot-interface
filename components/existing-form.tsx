@@ -192,7 +192,7 @@ export function ExistingForm() {
             onChange={handleAmountChange}
             className="mb-4 h-12 w-full rounded-lg border border-white/10 bg-dark p-4 text-white outline-none"
             type="text"
-            placeholder="Enter the amount of tokens to distribute"
+            placeholder="0"
           />
           {/* {errors.amount && (
                             <span>Please enter a valid number</span>
