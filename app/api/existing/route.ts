@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
     const leafToData: LeafInfo = {};
 
     Object.entries(claimAmounts).forEach(([key, value], index) => {
-      addressToLeaf[key] = keccak256(
+      addressToLeaf[key.toLowerCase()] = keccak256(
         encodePacked(
           ["uint256", "address", "uint256"],
           [BigInt(index), key as `0x${string}`, BigInt(value)]
