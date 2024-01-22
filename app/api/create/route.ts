@@ -1,4 +1,3 @@
-import { computeInfo } from "@/lib/computeInfo";
 import { AddressInfo, Data, LeafInfo } from "@/lib/types";
 import keccak256 from "keccak256";
 import MerkleTree from "merkletreejs";
@@ -12,7 +11,6 @@ export async function POST(req: NextRequest) {
   try {
     const json = await req.json();
     const fileContent = json.fileContent;
-    const whitelist = fileContent.split("\n");
 
     const amount = req.nextUrl.searchParams.get("amount");
 
@@ -20,7 +18,10 @@ export async function POST(req: NextRequest) {
       return NextResponse.error();
     }
 
-    const claimAmounts = await computeInfo(whitelist, Number(amount));
+    const claimAmounts = fileContent.reduce((acc, curr) => {
+      acc[curr.address] = curr.refundAmount;
+      return acc;
+    }, {});
 
     const addressToLeaf: AddressInfo = {};
     const leafToData: LeafInfo = {};
@@ -28,13 +29,12 @@ export async function POST(req: NextRequest) {
     Object.entries(claimAmounts).forEach(([key, value], index) => {
       addressToLeaf[key] = keccak256(
         encodePacked(
-          ["uint256", "address", "uint256"],
-          [BigInt(index), key as `0x${string}`, BigInt(value)]
+          ["uint256", "address"],
+          [BigInt(index), key as `0x${string}`]
         )
       );
 
       leafToData[addressToLeaf[key].toString()] = {
-        index: index,
         amount: value,
       };
     });
@@ -54,7 +54,6 @@ export async function POST(req: NextRequest) {
       const proof = tree.getHexProof(leaf);
       const leafData = leafToData[leaf.toString()];
       data[address] = {
-        index: leafData.index,
         amount: leafData.amount,
         proof: proof,
       };

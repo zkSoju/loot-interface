@@ -10,14 +10,12 @@ export type AddressInfo = {
 
 export type LeafInfo = {
   [leaf: string]: {
-    index: number;
     amount: number;
   };
 };
 
 export type Data = {
   [address: string]: {
-    index: number;
     amount: number;
     proof: string[];
   };
